@@ -1,0 +1,22 @@
+==================================================
+TREMOR ANALYSIS REPORT
+==================================================
+
+Patient: walterwhite
+Test Number: 3
+Timestamp: 2026-01-29 12:28:54
+Sample Rate: 100 Hz
+Window Duration: 4 seconds
+
+LINEAR TREMOR (Accelerometer):
+  Peak frequency: 1.00 Hz
+  Tremor power ratio: 0.075
+  Tremor band power: 1.65e-01
+
+ROTATIONAL TREMOR (Gyroscope):
+  Peak frequency: 1.50 Hz
+  Tremor power ratio: 0.250
+  Tremor band power: 8.74e+02
+
+OVERALL ASSESSMENT:
+  Status: POSSIBLE TREMOR

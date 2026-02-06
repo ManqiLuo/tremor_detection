@@ -1,0 +1,22 @@
+==================================================
+TREMOR ANALYSIS REPORT
+==================================================
+
+Patient: pinkman
+Test Number: 1
+Timestamp: 2026-01-29 12:30:48
+Sample Rate: 100 Hz
+Window Duration: 4 seconds
+
+LINEAR TREMOR (Accelerometer):
+  Peak frequency: 1.00 Hz
+  Tremor power ratio: 0.059
+  Tremor band power: 6.56e-01
+
+ROTATIONAL TREMOR (Gyroscope):
+  Peak frequency: 7.50 Hz
+  Tremor power ratio: 0.167
+  Tremor band power: 1.85e+03
+
+OVERALL ASSESSMENT:
+  Status: NO TREMOR

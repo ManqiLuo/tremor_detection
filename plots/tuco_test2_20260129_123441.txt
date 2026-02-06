@@ -1,0 +1,23 @@
+==================================================
+TREMOR ANALYSIS REPORT
+==================================================
+
+Patient: tuco
+Test Number: 2
+Timestamp: 2026-01-29 12:34:53
+Sample Rate: 100 Hz
+Window Duration: 4 seconds
+
+LINEAR TREMOR (Accelerometer):
+  Peak frequency: 1.00 Hz
+  Tremor power ratio: 0.060
+  Tremor band power: 4.91e-02
+
+ROTATIONAL TREMOR (Gyroscope):
+  Peak frequency: 4.50 Hz
+  Tremor power ratio: 0.342
+  Tremor band power: 1.35e+03
+
+OVERALL ASSESSMENT:
+  Status: TREMOR DETECTED
+  Type: Predominantly ROTATIONAL tremor (pill-rolling pattern)

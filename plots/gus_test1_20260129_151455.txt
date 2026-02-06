@@ -1,0 +1,22 @@
+==================================================
+TREMOR ANALYSIS REPORT
+==================================================
+
+Patient: gus
+Test Number: 1
+Timestamp: 2026-01-29 15:15:07
+Sample Rate: 100 Hz
+Window Duration: 4 seconds
+
+LINEAR TREMOR (Accelerometer):
+  Peak frequency: 1.00 Hz
+  Tremor power ratio: 0.014
+  Tremor band power: 6.66e-03
+
+ROTATIONAL TREMOR (Gyroscope):
+  Peak frequency: 1.00 Hz
+  Tremor power ratio: 0.228
+  Tremor band power: 5.31e+00
+
+OVERALL ASSESSMENT:
+  Status: NO TREMOR

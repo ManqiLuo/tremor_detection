@@ -1,0 +1,22 @@
+==================================================
+TREMOR ANALYSIS REPORT
+==================================================
+
+Patient: koko
+Test Number: 3
+Timestamp: 2026-01-29 15:27:02
+Sample Rate: 100 Hz
+Window Duration: 4 seconds
+
+LINEAR TREMOR (Accelerometer):
+  Peak frequency: 10.00 Hz
+  Tremor power ratio: 0.030
+  Tremor band power: 3.86e-01
+
+ROTATIONAL TREMOR (Gyroscope):
+  Peak frequency: 6.00 Hz
+  Tremor power ratio: 0.286
+  Tremor band power: 1.70e+02
+
+OVERALL ASSESSMENT:
+  Status: POSSIBLE TREMOR

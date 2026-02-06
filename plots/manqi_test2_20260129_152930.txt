@@ -1,0 +1,22 @@
+==================================================
+TREMOR ANALYSIS REPORT
+==================================================
+
+Patient: manqi
+Test Number: 2
+Timestamp: 2026-01-29 15:29:42
+Sample Rate: 100 Hz
+Window Duration: 4 seconds
+
+LINEAR TREMOR (Accelerometer):
+  Peak frequency: 7.00 Hz
+  Tremor power ratio: 0.050
+  Tremor band power: 5.39e-01
+
+ROTATIONAL TREMOR (Gyroscope):
+  Peak frequency: 9.50 Hz
+  Tremor power ratio: 0.228
+  Tremor band power: 1.56e+03
+
+OVERALL ASSESSMENT:
+  Status: NO TREMOR

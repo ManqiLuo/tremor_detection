@@ -1,0 +1,22 @@
+==================================================
+TREMOR ANALYSIS REPORT
+==================================================
+
+Patient: rohan
+Test Number: 1
+Timestamp: 2026-01-29 15:30:27
+Sample Rate: 100 Hz
+Window Duration: 4 seconds
+
+LINEAR TREMOR (Accelerometer):
+  Peak frequency: 10.00 Hz
+  Tremor power ratio: 0.003
+  Tremor band power: 1.47e-01
+
+ROTATIONAL TREMOR (Gyroscope):
+  Peak frequency: 1.50 Hz
+  Tremor power ratio: 0.078
+  Tremor band power: 3.10e+01
+
+OVERALL ASSESSMENT:
+  Status: NO TREMOR
