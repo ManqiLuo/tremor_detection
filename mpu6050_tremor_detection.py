@@ -299,7 +299,7 @@ try:
         if (tremor_ratio_accel > 0.3 or tremor_ratio_gyro > 0.3) and \
            (4 <= peak_freq_accel <= 6 or 4 <= peak_freq_gyro <= 6):
             if tremor_ratio_gyro > tremor_ratio_accel:
-                f.write("  Type: Predominantly ROTATIONAL tremor (pill-rolling pattern)\n")
+                f.write("  Type: Predominantly ROTATIONAL tremor\n")
             else:
                 f.write("  Type: Predominantly LINEAR tremor\n")
     
