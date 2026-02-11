@@ -126,17 +126,28 @@ try:
     gy_data = np.array(buffer_gy)
     gz_data = np.array(buffer_gz)
     
+    # Save raw data for later analysis
+    raw_data_path = os.path.join(plots_folder, f"{filename}_raw.npz")
+    np.savez(raw_data_path, 
+         ax=ax_data, ay=ay_data, az=az_data,
+         gx=gx_data, gy=gy_data, gz=gz_data,
+         sample_rate=SAMPLE_RATE,
+         patient_name=patient_name,
+         test_number=test_number,
+         timestamp=timestamp)
+    print(f"Raw data saved: {raw_data_path}")
+    
     # Calculate linear acceleration magnitude
     accel_magnitude = np.sqrt(ax_data**2 + ay_data**2 + az_data**2)
     
     # Calculate rotational velocity magnitude
     gyro_magnitude = np.sqrt(gx_data**2 + gy_data**2 + gz_data**2)
     
-    # High-pass filter to remove gravity and slow movements
-    sos_accel = signal.butter(4, 1, 'hp', fs=SAMPLE_RATE, output='sos')
+    # Band-pass filter to isolate tremor frequency (4-6 Hz)
+    sos_accel = signal.butter(4, [4, 6], 'bandpass', fs=SAMPLE_RATE, output='sos')
     filtered_accel = signal.sosfilt(sos_accel, accel_magnitude)
     
-    sos_gyro = signal.butter(4, 1, 'hp', fs=SAMPLE_RATE, output='sos')
+    sos_gyro = signal.butter(4, [4, 6], 'bandpass', fs=SAMPLE_RATE, output='sos')
     filtered_gyro = signal.sosfilt(sos_gyro, gyro_magnitude)
     
     # Compute Power Spectral Density for accelerometer
@@ -200,7 +211,7 @@ try:
         tremor_status = "NO TREMOR"
         print("  NO TREMOR - Normal movement pattern")
     
-    # Create plots NEED SIX!!!!!!!!!!!!!!
+    # Create plots
     time_axis = np.arange(len(accel_magnitude)) / SAMPLE_RATE
     
     fig, axes = plt.subplots(6, 1, figsize=(12, 16))
@@ -209,32 +220,31 @@ try:
     fig.suptitle(f'Tremor Analysis - {patient_name} - Test {test_number}\n{tremor_status}', 
                  fontsize=14, fontweight='bold')
     
-    # Plot 1 Raw accelerometer magnitude
+    # Plot 1: Raw accelerometer magnitude
     axes[0].plot(time_axis, accel_magnitude, 'b-', linewidth=0.8)
     axes[0].set_ylabel('Magnitude (m/s²)')
     axes[0].set_title('Raw Acceleration Magnitude')
     axes[0].grid(True, alpha=0.3)
     
-    # Plot 2 Filtered accelerometer magnitude
+    # Plot 2: Filtered accelerometer magnitude
     axes[1].plot(time_axis, filtered_accel, 'r-', linewidth=0.8)
     axes[1].set_ylabel('Filtered Magnitude (m/s²)')
-    axes[1].set_title('Filtered Acceleration (High-pass >1 Hz)')
+    axes[1].set_title('Filtered Acceleration (Band-pass 4-6 Hz)')
     axes[1].grid(True, alpha=0.3)
     
-    # Plot 3 Raw gyroscope magnitude
+    # Plot 3: Raw gyroscope magnitude
     axes[2].plot(time_axis, gyro_magnitude, 'g-', linewidth=0.8)
     axes[2].set_ylabel('Magnitude (°/s)')
     axes[2].set_title('Raw Gyroscope Magnitude')
     axes[2].grid(True, alpha=0.3)
     
-    # Plot 4 Filtered gyroscope magnitude
+    # Plot 4: Filtered gyroscope magnitude
     axes[3].plot(time_axis, filtered_gyro, 'm-', linewidth=0.8)
     axes[3].set_ylabel('Filtered Magnitude (°/s)')
-    axes[3].set_xlabel('Time (s)')
-    axes[3].set_title('Filtered Gyroscope (High-pass >1 Hz)')
+    axes[3].set_title('Filtered Gyroscope (Band-pass 4-6 Hz)')
     axes[3].grid(True, alpha=0.3)
     
-    # Plot 5 Accelerometer PSD
+    # Plot 5: Accelerometer PSD
     axes[4].semilogy(freqs_accel, psd_accel, 'b-', linewidth=1.5)
     axes[4].axvspan(4, 6, alpha=0.3, color='red', label='Tremor band (4-6 Hz)')
     axes[4].axvline(peak_freq_accel, color='blue', linestyle='--', 
@@ -246,7 +256,7 @@ try:
     axes[4].legend()
     axes[4].grid(True, alpha=0.3)
     
-    # Plot 6 Gyroscope PSD
+    # Plot 6: Gyroscope PSD
     axes[5].semilogy(freqs_gyro, psd_gyro, 'g-', linewidth=1.5)
     axes[5].axvspan(4, 6, alpha=0.3, color='red', label='Tremor band (4-6 Hz)')
     axes[5].axvline(peak_freq_gyro, color='green', linestyle='--', 
@@ -264,7 +274,7 @@ try:
     plot_path = os.path.join(plots_folder, f"{filename}.png")
     plt.savefig(plot_path, dpi=150, bbox_inches='tight')
     
-    
+    # Save text report
     report_path = os.path.join(plots_folder, f"{filename}.txt")
     with open(report_path, 'w') as f:
         f.write("=" * 50 + "\n")
@@ -274,7 +284,8 @@ try:
         f.write(f"Test Number: {test_number}\n")
         f.write(f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
         f.write(f"Sample Rate: {SAMPLE_RATE} Hz\n")
-        f.write(f"Window Duration: {WINDOW_SECONDS} seconds\n\n")
+        f.write(f"Window Duration: {WINDOW_SECONDS} seconds\n")
+        f.write(f"Filter Type: Band-pass 4-6 Hz\n\n")
         f.write("LINEAR TREMOR (Accelerometer):\n")
         f.write(f"  Peak frequency: {peak_freq_accel:.2f} Hz\n")
         f.write(f"  Tremor power ratio: {tremor_ratio_accel:.3f}\n")
