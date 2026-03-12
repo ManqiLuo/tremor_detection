@@ -8,15 +8,11 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-# ---------------------------------------------------------------
 # Paths
-# ---------------------------------------------------------------
 EXPORT_DIR  = os.path.join(os.path.expanduser("~"), "Desktop", "export")
 AGE_GROUPS  = ["18-24", "41-50", "51-60", "unknow"]
 
-# ---------------------------------------------------------------
 # Tremor thresholds
-# ---------------------------------------------------------------
 RATIO_SIGNIFICANT     = 0.35
 RATIO_MILD            = 0.20
 RMS_ACCEL_SIGNIFICANT = 0.50
@@ -24,9 +20,7 @@ RMS_ACCEL_MILD        = 0.35
 RMS_GYRO_SIGNIFICANT  = 18.0
 RMS_GYRO_MILD         = 10.0
 
-# ---------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------
+
 def parse_ts(s):
     if not s or str(s).strip() == '':
         return None
@@ -86,10 +80,7 @@ def analyze_tester(session_id, tester_path, out_base):
     print("\n" + "=" * 55)
     print(f"Session: {session_id}")
     print("=" * 55)
-
-    # -------------------------------------------------------
     # Read game_results.csv — look for spiral
-    # -------------------------------------------------------
     game_csv = os.path.join(tester_path, "game_results.csv")
     if not os.path.exists(game_csv):
         # Try case-insensitive search
@@ -123,9 +114,7 @@ def analyze_tester(session_id, tester_path, out_base):
     print(f"  Spiral: {spiral_start.strftime('%H:%M:%S')} - "
           f"{spiral_end.strftime('%H:%M:%S')}  ({duration:.1f}s)")
 
-    # -------------------------------------------------------
     # Read sensor_timeseries.csv
-    # -------------------------------------------------------
     sensor_csv = os.path.join(tester_path, "sensor_timeseries.csv")
     if not os.path.exists(sensor_csv):
         for f in os.listdir(tester_path):
@@ -183,16 +172,12 @@ def analyze_tester(session_id, tester_path, out_base):
     ax_data = np.array(ax_data); ay_data = np.array(ay_data); az_data = np.array(az_data)
     gx_data = np.array(gx_data); gy_data = np.array(gy_data); gz_data = np.array(gz_data)
 
-    # -------------------------------------------------------
     # Raw magnitudes (for plotting only)
-    # -------------------------------------------------------
     accel_magnitude_raw = np.sqrt(ax_data**2 + ay_data**2 + az_data**2)
     gyro_magnitude_raw  = np.sqrt(gx_data**2 + gy_data**2 + gz_data**2)
 
-    # -------------------------------------------------------
     # Remove artifacts BEFORE filtering and PSD
     # Interpolate over spikes so they don't corrupt frequency analysis
-    # -------------------------------------------------------
     accel_magnitude_clean, accel_art_mask = remove_artifacts(accel_magnitude_raw, 3.0)
     gyro_magnitude_clean,  gyro_art_mask  = remove_artifacts(gyro_magnitude_raw,  3.0)
 
@@ -225,9 +210,7 @@ def analyze_tester(session_id, tester_path, out_base):
     if has_artifacts:
         print(f"  Artifacts removed: {n_accel_artifacts} accel + {n_gyro_artifacts} gyro samples interpolated")
 
-    # -------------------------------------------------------
     # Tremor analysis on CLEANED data
-    # -------------------------------------------------------
     # Bandpass 1-15 Hz: removes gravity/drift (low) and noise (high)
     # Keeps only tremor-relevant range, reduces RMS inflation from broadband noise
     nyq = SAMPLE_RATE / 2
@@ -264,13 +247,13 @@ def analyze_tester(session_id, tester_path, out_base):
     jerk             = np.abs(np.diff(accel_magnitude_clean)) * SAMPLE_RATE
     smoothness_score = np.mean(jerk)
 
-    # -------------------------------------------------------
+
     # Peak prominence check:
     # A real tremor peak should be significantly higher than
     # the surrounding non-tremor bands (not just a flat spectrum).
     # Compute mean PSD in neighbouring bands 1-4 Hz and 6-10 Hz,
     # then check if the 4-6 Hz band is at least 2x that baseline.
-    # -------------------------------------------------------
+
     def peak_is_prominent(freqs, psd, band_low=4, band_high=6, factor=2.0):
         tremor_mask  = (freqs >= band_low)  & (freqs <= band_high)
         below_mask   = (freqs >= 1)         & (freqs < band_low)
@@ -309,17 +292,13 @@ def analyze_tester(session_id, tester_path, out_base):
         print(f"  NOTE: {artifact_note}")
     print(f"  --> {tremor_status}")
 
-    # -------------------------------------------------------
     # Output folder
-    # -------------------------------------------------------
     out_folder = os.path.join(out_base, f"{session_id}_tremor_detection")
     os.makedirs(out_folder, exist_ok=True)
     run_ts   = datetime.now().strftime("%Y%m%d_%H%M%S")
     basename = f"{session_id}_{run_ts}"
 
-    # -------------------------------------------------------
     # Plot — raw signals shown as-is, cleaned used for analysis
-    # -------------------------------------------------------
     time_axis = np.arange(len(accel_magnitude_raw)) / SAMPLE_RATE
     fig, axes = plt.subplots(6, 1, figsize=(14, 20))
     artifact_title_note = f"\n{artifact_note} (interpolated for analysis)" if has_artifacts else ""
@@ -388,9 +367,7 @@ def analyze_tester(session_id, tester_path, out_base):
     plt.savefig(plot_path, dpi=150, bbox_inches='tight')
     plt.close()
 
-    # -------------------------------------------------------
-    # Text report
-    # -------------------------------------------------------
+    # Text analysis
     report_path = os.path.join(out_folder, f"{basename}_report.txt")
     with open(report_path, 'w') as f:
         f.write("=" * 55 + "\n")
@@ -431,9 +408,7 @@ def analyze_tester(session_id, tester_path, out_base):
     print(f"  Saved: {out_folder}")
     return "ok"
 
-# ---------------------------------------------------------------
 # Main
-# ---------------------------------------------------------------
 total_success = 0
 total_skipped = 0
 
