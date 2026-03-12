@@ -5,15 +5,11 @@ import numpy as np
 from scipy.signal import butter, filtfilt, find_peaks
 from datetime import datetime
 
-# ---------------------------------------------------------------
-# Paths
-# ---------------------------------------------------------------
+
 EXPORT_DIR  = os.path.join(os.path.expanduser("~"), "Desktop", "export")
 AGE_GROUPS  = ["18-24", "41-50", "51-60", "unknow"]
 
-# ---------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------
+
 def parse_ts(s):
     if not s or str(s).strip() == '':
         return None
@@ -72,9 +68,8 @@ def fmt_time(seconds):
     s = int(seconds) % 60
     return f"{m:02d}:{s:02d}"
 
-# ---------------------------------------------------------------
+
 # Per-tester analysis
-# ---------------------------------------------------------------
 def analyze_tester(session_id, tester_path, out_base):
     print("\n" + "=" * 55)
     print(f"Session: {session_id}")
@@ -92,9 +87,8 @@ def analyze_tester(session_id, tester_path, out_base):
             print(f"  Files: {os.listdir(tester_path)}")
             return "skipped"
 
-    # -------------------------------------------------------
+
     # Load oxi rows — full recording
-    # -------------------------------------------------------
     rows     = []
     ts_list  = []
 
@@ -142,9 +136,8 @@ def analyze_tester(session_id, tester_path, out_base):
     if np.mean(ir_data) < 50000 or np.mean(red_data) < 50000:
         print(f"  WARNING: Low signal — finger may not have been on sensor throughout")
 
-    # -------------------------------------------------------
+
     # Second-by-second timeline using 10s lookback window
-    # -------------------------------------------------------
     LOOKBACK = SAMPLE_RATE * 10
     HALF     = LOOKBACK // 2
 
@@ -171,9 +164,8 @@ def analyze_tester(session_id, tester_path, out_base):
 
         timeline.append({'time': time_str, 'hr': hr_out, 'spo2': spo2_out, 'note': note})
 
-    # -------------------------------------------------------
+
     # Overall summary
-    # -------------------------------------------------------
     valid_hrs   = []
     valid_spo2s = []
     for entry in timeline:
@@ -198,9 +190,8 @@ def analyze_tester(session_id, tester_path, out_base):
     print(f"  Heart Rate:   {hr_summary}")
     print(f"  SpO2:         {spo2_summary}")
 
-    # -------------------------------------------------------
-    # Output folder + report
-    # -------------------------------------------------------
+    # Output folder
+
     out_folder = os.path.join(out_base, f"{session_id}_hr_spo2_results")
     os.makedirs(out_folder, exist_ok=True)
     run_ts      = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -239,9 +230,7 @@ def analyze_tester(session_id, tester_path, out_base):
     print(f"  Saved: {out_folder}")
     return "ok"
 
-# ---------------------------------------------------------------
 # Main
-# ---------------------------------------------------------------
 total_success = 0
 total_skipped = 0
 
